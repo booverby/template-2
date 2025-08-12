@@ -1,10 +1,19 @@
 import { NextResponse } from "next/server";
 import fs from "fs";
 import OpenAI from "openai";
-
-const openai = new OpenAI();
+import { findUser } from "@/lib/users";
 
 export async function POST(req: Request) {
+  const username = req.headers.get("authorization") || "";
+  const user = findUser(username);
+  if (!user?.openaiKey) {
+    return NextResponse.json(
+      { error: "Missing OpenAI API key" },
+      { status: 400 }
+    );
+  }
+
+  const openai = new OpenAI({ apiKey: user.openaiKey });
   const body = await req.json();
 
   const base64Audio = body.audio;
