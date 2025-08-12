@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useDeepgram } from '../lib/contexts/DeepgramContext';
 import { addDocument } from '../lib/firebase/firebaseUtils';
 import { motion } from 'framer-motion';
