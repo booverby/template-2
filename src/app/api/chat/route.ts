@@ -1,5 +1,5 @@
-import { openai } from '@ai-sdk/openai';
-import { anthropic } from '@ai-sdk/anthropic';
+import { createOpenAI } from '@ai-sdk/openai';
+import { createAnthropic } from '@ai-sdk/anthropic';
 import { convertToCoreMessages, streamText } from 'ai';
 import { findUser } from '@/lib/users';
 
@@ -17,8 +17,8 @@ export async function POST(req: Request) {
     return new Response('Missing API key', { status: 400 });
   }
   const modelFn = provider === 'anthropic'
-    ? anthropic(model, { apiKey })
-    : openai(model, { apiKey });
+    ? createAnthropic({ apiKey })(model)
+    : createOpenAI({ apiKey })(model);
   const result = await streamText({
     model: modelFn,
     messages: convertToCoreMessages(messages),
