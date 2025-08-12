@@ -18,24 +18,26 @@ export default function ChatPage() {
     }
   }, [router]);
 
-  const sendMessage = async () => {
-    const token = localStorage.getItem('token') || '';
-    const newMessages = [...messages, { role: 'user', content: input }];
-    setMessages(newMessages);
-    setInput('');
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
-      body: JSON.stringify({ provider, model, messages: newMessages }),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      setMessages([...newMessages, { role: 'assistant', content: data.reply }]);
-    }
-  };
+    const sendMessage = async () => {
+      const token = localStorage.getItem('token') || '';
+      const userMessage: Message = { role: 'user', content: input };
+      const newMessages: Message[] = [...messages, userMessage];
+      setMessages(newMessages);
+      setInput('');
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+        body: JSON.stringify({ provider, model, messages: newMessages }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        const assistantMessage: Message = { role: 'assistant', content: data.reply };
+        setMessages([...newMessages, assistantMessage]);
+      }
+    };
 
   return (
     <div className="p-4 space-y-4">
